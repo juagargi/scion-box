@@ -7,6 +7,7 @@ PORT=1194
 NETWORK="10.0.8.0"
 SUBNET="255.255.255.0"
 SERVICE_NAME="server"
+COORDINATOR_URL="https://www.scionlab.org"
 no_vpn=0
 inside_docker=0
 
@@ -24,9 +25,10 @@ where:
     -s Subnet       Subnet to configure the OpenVPN server. Defaults to 255.255.255.0
     -a account_id   Account ID
     -b acc_secret   Account secret
-    -t              Don't install any VPN files, only update scripts and services.
+    -c Coordinator  (per default https://www.scionlab.org) You can specify a different address for the Coordinator here.
+    -u              Don't install any VPN files, only update scripts and services.
     -d              Run inside a docker container."
-while getopts ":hi:p:n:s:a:b:tdS:" opt; do
+while getopts ":hi:p:n:s:a:b:udS:c:" opt; do
 case $opt in
     h)
         echo "$usage"
@@ -59,6 +61,9 @@ case $opt in
         ;;
     S)
         SERVICE_NAME="$OPTARG"
+        ;;
+    c)
+        COORDINATOR_URL="$OPTARG"
         ;;
     \?)
         echo "Invalid option: -$OPTARG" >&2
@@ -93,8 +98,8 @@ declare -a updater_files=("$BASE/../update_gen.py"
                           "$BASE/../sub/util/local_config_util.py")
 declare -a service_files=("$BASE/files/updateGen.service"
                           "$BASE/files/updateGen.timer")
-declare -a files=("${updater_files[@]}")
 
+declare -a files=("${updater_files[@]}")
 if [ $inside_docker -eq 0 ]; then
     files+=("${service_files[@]}")
 fi
@@ -163,6 +168,7 @@ fi
 
 # copy and run update gen
 cp "${updater_files[@]}" "$HOME/.local/bin/"
+sed -i -- "s/_COORDINATOR_URL_/$COORDINATOR_URL/g" "updateGen.sh"
 if [ $inside_docker -eq 0 ]; then
     echo "Stop and remove old service files (if they exist)"
     sudo systemctl stop "updateAS.timer" || true

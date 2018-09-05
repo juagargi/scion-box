@@ -15,7 +15,7 @@ if [ -f "$SC/gen/account_secret" ]; then
     ACC_PW=$(cat $SC/gen/account_secret)
 fi
 IP_ADDR=$(hostname -I | awk '{print $1}')
-URL="https://www.scionlab.org"
+URL=_COORDINATOR_URL_
 
 # Parse named arguments string into array
 IFS=$'\n' ARGS=($(echo " $*" | awk '{split($0, out, " --"); for(e in out) {print out[e];}}'))
