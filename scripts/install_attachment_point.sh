@@ -186,11 +186,11 @@ if [ $inside_docker -eq 0 ]; then
         sudo cp "$TMPFILE" "/etc/systemd/system/$(basename $f)"
     done
     sudo systemctl daemon-reload
-    echo "Start service files"
-    sudo systemctl start "updateGen.service" || true
+    echo "Enable service files"
     sudo systemctl enable "updateGen.service"
-    sudo systemctl start "updateGen.timer"
     sudo systemctl enable "updateGen.timer"
+    echo "Start updater timer"
+    sudo systemctl start "updateGen.timer"
 fi
 
 echo "Done."
