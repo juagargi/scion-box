@@ -35,8 +35,8 @@ case $opt in
         exit 0
         ;;
     i)
-        ia="$OPTARG"
-        asname="AS$ia"
+        IA="$OPTARG"
+        ASNAME="AS$IA"
         ;;
     p)
         PORT="$OPTARG"
@@ -89,15 +89,15 @@ if [ -z "$ACC_PWD" ] && [ -f "$SC/gen/account_secret" ]; then
     ACC_PWD=$(cat "$SC/gen/account_secret")
 fi
 
-if [ "$no_vpn" -eq 0 ] && { [ -z "$asname" ] || [ -z "$ACC_ID" ] || [ -z "$ACC_PWD" ]; } then
+if [ "$no_vpn" -eq 0 ] && { [ -z "$ASNAME" ] || [ -z "$ACC_ID" ] || [ -z "$ACC_PWD" ]; } then
     echo "$usage"
     exit 1
 fi
 
 declare -a vpn_files=("$CWD/ca.crt"
                       "$CWD/dh4096.pem"
-                      "$CWD/$asname.crt"
-                      "$CWD/$asname.key")
+                      "$CWD/$ASNAME.crt"
+                      "$CWD/$ASNAME.key")
 declare -a updater_files=("$BASE/../update_gen.py"
                           "$BASE/../updateGen.sh"
                           "$BASE/../sub/util/local_config_util.py")
@@ -125,7 +125,7 @@ if [ ! -z "$missingFiles" ]; then
     echo "${files[@]}"
     echo "But there are missing files:"
     echo "${missingFiles[@]}"
-    echo "Get the .key and .crt files from the Coordinator. Run ./build-key-server $asname"
+    echo "Get the .key and .crt files from the Coordinator. Run ./build-key-server $ASNAME"
     exit 1
 fi
 
@@ -143,7 +143,7 @@ if [ "$no_vpn" -eq 0 ]; then
     cp "$BASE/files/server.conf" "$TMPFILE"
     sed -i -- "s/_PORT_/$PORT/g" "$TMPFILE"
     sed -i -- "s/_SRVNAME_/$SERVICE_NAME/g" "$TMPFILE"
-    sed -i -- "s/_ASNAME_/$asname/g" "$TMPFILE"
+    sed -i -- "s/_ASNAME_/$ASNAME/g" "$TMPFILE"
     sed -i -- "s/_NETWORK_/$NETWORK/g" "$TMPFILE"
     sed -i -- "s/_SUBNET_/$SUBNET/g" "$TMPFILE"
     sed -i -- "s/_USER_/$USER/g" "$TMPFILE"
@@ -151,7 +151,7 @@ if [ "$no_vpn" -eq 0 ]; then
 
     # copy the 4 files from coordinator
     sudo cp "${vpn_files[@]}" "/etc/openvpn/"
-    sudo chmod 600 "/etc/openvpn/$asname.key"
+    sudo chmod 600 "/etc/openvpn/$ASNAME.key"
 
     # client configurations to get static IPs
     mkdir -p "$HOME/openvpn_ccd"
@@ -166,7 +166,7 @@ if [ "$no_vpn" -eq 0 ]; then
 
     # create the three ia, account_secret account_id files under gen :
     pushd "$SC/gen" >/dev/null
-    printf "$ia" > "ia"
+    printf "$IA" > "ia"
     [[ ! -f account_id ]] && printf "$ACC_ID" > account_id
     [[ ! -f account_secret ]] && printf "$ACC_PWD" > account_secret
     popd >/dev/null
