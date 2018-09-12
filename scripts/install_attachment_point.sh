@@ -82,7 +82,6 @@ if [ $inside_docker -eq 1 ]; then
     no_vpn=1
 fi
 
-pip3 install --user -r "../requirements.txt"
 
 if [ "$no_vpn" -eq 0 ] && { [ -z "$asname" ] || [ -z "$ACC_ID" ] || [ -z "$ACC_PWD" ]; } then
     echo "$usage"
@@ -125,6 +124,7 @@ if [ ! -z "$missingFiles" ]; then
 fi
 
 # STEPS
+pip3 install --user -r "../requirements.txt"
 TMPFILE=$(mktemp)
 if [ "$no_vpn" -eq 0 ]; then
     # (from https://help.ubuntu.com/lts/serverguide/openvpn.html)
