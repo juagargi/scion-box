@@ -166,7 +166,7 @@ if [ "$no_vpn" -eq 0 ]; then
 
     # create the three ia, account_secret account_id files under gen :
     pushd "$SC/gen" >/dev/null
-    printf "$IA" > "ia"
+    [[ ! -f ia ]] && printf "$IA" > "ia"
     [[ ! -f account_id ]] && printf "$ACC_ID" > account_id
     [[ ! -f account_secret ]] && printf "$ACC_PWD" > account_secret
     popd >/dev/null
