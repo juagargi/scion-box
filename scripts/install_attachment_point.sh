@@ -16,15 +16,15 @@ CWD=$(pwd)
 BASE=$(realpath $(dirname "$0"))
 cd "$BASE"
 
-usage="$(basename $0) -i IA -a account_id -b account_secret [-S server] [-p 1194] [-s 255.255.255.0] [-c 'https://www.scionlab.org']
+usage="$(basename $0) -i IA [-a account_id] [-b account_secret] [-S server] [-p 1194] [-s 255.255.255.0] [-c 'https://www.scionlab.org']
 where:
     -i IA           IA of this AS, also used to derive the name of the two VPN server files. E.g. 1-17, and will look for AS1-17.{crt,key}
+    -a account_id   Account ID (per default cat $SC/gen/account_id)
+    -b acc_secret   Account secret (per default cat $SC/gen/account_secret)
     -S service name (per default \"server\") You can specify a different VPN service name here (to use in e.g. systemctl status openvpn@server).
     -p Port         Port where the OpenVPN server will listen. Defaults to 1194.
     -n Net          Network for the OpenVPN server. Defaults to 10.0.8.0
     -s Subnet       Subnet to configure the OpenVPN server. Defaults to 255.255.255.0
-    -a account_id   Account ID
-    -b acc_secret   Account secret
     -c Coordinator  (per default https://www.scionlab.org) You can specify a different address for the Coordinator here.
     -t              Don't install any VPN files, only update scripts and services.
     -d              Run inside a docker container."
@@ -82,6 +82,12 @@ if [ $inside_docker -eq 1 ]; then
     no_vpn=1
 fi
 
+if [ -z "$ACC_ID" ] && [ -f "$SC/gen/account_id" ]; then
+    ACC_ID=$(cat "$SC/gen/account_id")
+fi
+if [ -z "$ACC_PWD" ] && [ -f "$SC/gen/account_secret" ]; then
+    ACC_PWD=$(cat "$SC/gen/account_secret")
+fi
 
 if [ "$no_vpn" -eq 0 ] && { [ -z "$asname" ] || [ -z "$ACC_ID" ] || [ -z "$ACC_PWD" ]; } then
     echo "$usage"
@@ -161,8 +167,8 @@ if [ "$no_vpn" -eq 0 ]; then
     # create the three ia, account_secret account_id files under gen :
     pushd "$SC/gen" >/dev/null
     printf "$ia" > "ia"
-    printf "$ACC_ID" > account_id
-    printf "$ACC_PWD" > account_secret
+    [[ ! -f account_id ]] && printf "$ACC_ID" > account_id
+    [[ ! -f account_secret ]] && printf "$ACC_PWD" > account_secret
     popd >/dev/null
 fi
 
