@@ -168,7 +168,7 @@ fi
 
 # copy and run update gen
 cp "${updater_files[@]}" "$HOME/.local/bin/"
-sed -i -- "s/_COORDINATOR_URL_/$COORDINATOR_URL/g" "updateGen.sh"
+sed -i -- "s|_COORDINATOR_URL_|$COORDINATOR_URL|g" "$HOME/.local/bin/updateGen.sh"
 if [ $inside_docker -eq 0 ]; then
     echo "Stop and remove old service files (if they exist)"
     sudo systemctl stop "updateAS.timer" || true

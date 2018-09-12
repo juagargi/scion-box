@@ -8,7 +8,7 @@ Type=oneshot
 RemainAfterExit=no
 User=_USER_
 WorkingDirectory=/home/_USER_/.local/bin
-Environment="PATH=/home/_USER_/.local/bin:/home/_USER_/go/bin:/usr/local/go/bin:/home/_USER_/bin:/home/_USER_/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin" "GOPATH=/home/_USER_/go"
+Environment="PATH=/home/_USER_/.local/bin:/home/_USER_/go/bin:_GOBIN_:/home/_USER_/bin:/home/_USER_/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin" "GOPATH=/home/_USER_/go"
 ExecStart=/home/_USER_/.local/bin/updateGen.sh
 # because updateGen.sh can call scion.sh run, which calls supervisor to spawn processes. We need those not to be killed when updateGen.sh exits:
 KillMode=none
