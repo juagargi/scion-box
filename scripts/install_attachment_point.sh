@@ -75,7 +75,7 @@ case $opt in
         echo "$usage" >&2
         exit 1
         ;;
-esac
+    esac
 done
 
 if [ $inside_docker -eq 1 ]; then
