@@ -14,7 +14,11 @@ fi
 if [ -f "$SC/gen/account_secret" ]; then
     ACC_PW=$(cat $SC/gen/account_secret)
 fi
-IP_ADDR=$(hostname -I | awk '{print $1}')
+if [ -f "$SC/gen/public_ip" ]; then
+    IP_ADDR=$(cat $SC/gen/public_ip)
+else
+    IP_ADDR=$(hostname -I | awk '{print $1}')
+fi
 URL="https://www.scionlab.org"
 
 # Parse named arguments string into array
